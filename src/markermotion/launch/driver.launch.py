@@ -21,10 +21,10 @@ def generate_launch_description():
     )
 
     depth_realtime_node = Node(
-            package='calibration',  
-            executable='depth_realtime',  
-            name='depth_realtime_node',  
-            output='screen'  
+        package='calibration',  
+        executable='depth_realtime',  
+        name='depth_realtime_node',  
+        output='screen'  
     )
 
     gelsight_driver_node = Node(
@@ -44,6 +44,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         image_publisher_node,
+        depth_realtime_node,
         gelsight_driver_node,
         rviz2_node
     ])

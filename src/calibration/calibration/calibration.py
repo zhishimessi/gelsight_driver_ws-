@@ -57,7 +57,6 @@ class calibration:
         return (1 - mask) * 255
     
     def find_dots(self, binary_image):
-        # down_image = cv2.resize(binary_image, None, fx=2, fy=2)
         params = cv2.SimpleBlobDetector_Params()
         # Change thresholds
         params.minThreshold = 1

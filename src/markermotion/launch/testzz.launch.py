@@ -44,7 +44,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         image_publisher_node,
-        # depth_realtime_node,
+        depth_realtime_node,
         gelsight_driver_node,
         rviz2_node
     ])

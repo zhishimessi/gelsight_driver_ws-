@@ -15,14 +15,56 @@ import cv2
 import os
 import pickle
 import std_srvs.srv
-from fast_poisson import fast_poisson
+# from fast_poisson import fast_poisson
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits import mplot3d
 import collections
 from std_msgs.msg import Header
 import struct
-import open3d as o3d
 
+from scipy.fftpack import dst
+from scipy.fftpack import idst
+
+def fast_poisson(gx,gy):
+    
+#    j = 1:ydim-1; 
+#	k = 1:xdim-1;
+#
+#	% Laplacian
+#	gyy(j+1,k) = gy(j+1,k) - gy(j,k); 
+#	gxx(j,k+1) = gx(j,k+1) - gx(j,k);
+    
+    
+    m,n = gx.shape
+    gxx = np.zeros((m,n))
+    gyy = np.zeros((m,n))
+    f = np.zeros((m,n))
+    img = np.zeros((m,n))
+    gyy[1:,:-1] = gy[1:,:-1] - gy[:-1,:-1]
+    gxx[:-1,1:] = gx[:-1,1:] - gx[:-1,:-1]
+    f = gxx + gyy 
+    
+    f2 = f[1:-1,1:-1].copy()
+    
+    f_sinx = dst(f2,norm='ortho')
+    f_sinxy = dst(f_sinx.T,norm='ortho').T
+    
+
+    
+    x_mesh, y_mesh = np.meshgrid(range(n-2),range(m-2)) 
+    x_mesh = x_mesh +1
+    y_mesh = y_mesh +1
+    denom = (2*np.cos(np.pi*x_mesh/(n-1))-2) + (2*np.cos(np.pi*y_mesh/(m-1))-2)
+    
+    
+    f3 = f_sinxy/denom
+#    plt.figure(10)
+#    plt.imshow(denom)
+#    plt.show()
+    f_realx = idst(f3,norm='ortho')
+    f_realxy = idst(f_realx.T,norm='ortho').T
+    img[1:-1,1:-1] = f_realxy.copy()
+    return img
 
 class SlipDetectionReaction(Node):
     def __init__(self):
@@ -35,7 +77,8 @@ class SlipDetectionReaction(Node):
 
         self.img_counter1 = 0
         self.img_counter2 = 0
-        self.table = np.load(os.path.join(table_save_dir, "table_3_smooth.npy"))  
+        # self.table = np.load(os.path.join(table_save_dir, "table_3_smooth.npy"))
+        self.table = np.load("/home/donghy/Desktop/thesis/gelsight_driver/Bnz/ROS2/gelsight_driver_ws/src/calibration/load/table_3_smooth.npy")
         self.pad = 20
         self.zeropoint = -90
         self.lookscale = 180

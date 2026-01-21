@@ -19,7 +19,7 @@ from rclpy.executors import SingleThreadedExecutor
 
 class GelSight_Img(object):
     def __init__(self, node, frame, frame0=None):
-        self.node = node  # 持有ROS2节点引用
+        self.node = node  
         self.reinit(frame, frame0)
         self.bridge = CvBridge()
         self.contactmap = np.zeros([480, 640])
