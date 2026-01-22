@@ -27,10 +27,17 @@ def generate_launch_description():
             output='screen'  
     )
 
-    gelsight_driver_node = Node(
+    marker_ros2_node = Node(
         package="markermotion",
-        executable="gelsight_driver",
-        name="gelsight_driver",
+        executable="marker_ros2",
+        name="marker_ros2",
+        output="screen"
+    )
+
+    marker_cv2_node = Node(
+        package="markermotion",
+        executable="marker_cv2",
+        name="marker_cv2",
         output="screen"
     )
 
@@ -45,6 +52,7 @@ def generate_launch_description():
     return LaunchDescription([
         image_publisher_node,
         depth_realtime_node,
-        gelsight_driver_node,
+        marker_ros2_node,
+        # marker_cv2_node,
         rviz2_node
     ])

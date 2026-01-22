@@ -33,7 +33,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'gelsight_driver = markermotion.gelsight_bridge_basic:main',
+            'marker_ros2 = markermotion.gelsight_bridge_basic:main',
+            'marker_cv2 = markermotion.marker_cv2version:main',
         ],
     },
 )

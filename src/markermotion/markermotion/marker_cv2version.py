@@ -25,8 +25,6 @@ class GelSight_Img(object):
         # parameters for display
         self.IsDisplay = False  # whether to publish the marker motion image
         self.showScale = 8
-        # ROS2发布器
-        self.pub = self.node.create_publisher(Image, '/gelsight/MarkerMotion', 2)
 
     def loc_markerArea(self):
         '''match the area of the markers; work for the Bnz GelSight'''
@@ -40,10 +38,13 @@ class GelSight_Img(object):
         for i in range(self.MarkerCount):
             if self.markerU[i] != 0:
                 cv2.line(disIm, (markerCenter[i, 0], markerCenter[i, 1]),
-                         (int(self.flowcenter[i, 0] + self.markerU[i] * self.showScale),
-                          int(self.flowcenter[i, 1] + self.markerV[i] * self.showScale)),
-                         (0, 255, 255), 2)
-        self.pub.publish(self.bridge.cv2_to_imgmsg(disIm, "bgr8"))
+                        (int(self.flowcenter[i, 0] + self.markerU[i] * self.showScale),
+                        int(self.flowcenter[i, 1] + self.markerV[i] * self.showScale)),
+                        (0, 255, 255), 2)
+        # 替换ROS2发布为cv2本地显示
+        cv2.namedWindow('GelSight Marker Motion', cv2.WINDOW_NORMAL)  # 自适应窗口
+        cv2.imshow('GelSight Marker Motion', disIm)
+        cv2.waitKey(1)  # 1ms阻塞（必须传值，否则窗口无响应，且避免阻塞ROS2回调）
 
     def find_markers(self):
         self.loc_markerArea()
@@ -301,4 +302,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-
